@@ -5,7 +5,7 @@ This project investigates the influence of key economic and social factors on ch
 
 * **Authors:** Sonia Rawat, Chinmay Shetty
 * **Language:** R (Tidyverse, Janitor, Broom)
-* **Output:** [View Full HTML Report](./Child_Mortality_Analysis.html) *(Download to view interactive elements)*
+* **Output:** HTML File has been attached
 
 ## Research Question
 *"How do key economic and social factors (Child Mortality Rate, GDP per Capita, Fertility Rate, Immunization Coverage) influence child mortality rates in developing countries?"*
