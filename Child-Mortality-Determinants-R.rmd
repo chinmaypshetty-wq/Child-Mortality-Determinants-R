@@ -1,0 +1,740 @@
+---
+title: "How do key economic and social factors (Child Mortality Rate,GDP per Capita, Fertility Rate,Immunization Coverage (DPT)) influence child mortality rates in developing countries? (1980-2022)"
+author: "Sonia Rawat, Chinmay Shetty"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: journal
+    highlight: pygments
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    code_folding: hide
+---
+<style>
+
+/* General styling for the body */
+body {
+    font-family: "Georgia", serif;
+    color: #333333; /* Default text color: black */
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+}
+
+/* Center the main content container */
+.main-content {
+    max-width: 800px; /* Width of the content */
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* TOC Styling */
+#toc {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#toc .toc-active, .tocify-item.tocify-focus {
+    background-color: #1a73e8 !important; /* Blue background for active TOC item */
+    color: white !important; /* White text for active TOC item */
+    font-weight: bold;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+#toc a {
+    color: #1a73e8; /* Blue color for TOC links */
+    text-decoration: none;
+}
+
+#toc a:hover {
+    text-decoration: underline;
+    color: #005cbf; /* Darker blue on hover */
+}
+
+/* Link styling */
+a {
+    color: #1a73e8; /* Blue color for all links */
+    text-decoration: none;
+}
+
+a:hover {
+    color: #005cbf; /* Darker blue on hover */
+    text-decoration: underline;
+}
+
+a:visited {
+    color: #1a73e8; /* Blue for visited links */
+}
+
+/* Header styling with underlining */
+h1, h2, h3 {
+    border-bottom: 2px solid #1a73e8; /* Blue underline for headings */
+    padding-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Heading colors */
+h1 {
+    color: #1a73e8; /* Blue for main headers */
+}
+h2 {
+    color: #2e7d32; /* Green for subheaders */
+}
+h3 {
+    color: #333333; /* Black for lower-level subheaders */
+}
+
+/* Custom box for highlighted sections */
+.custom-box {
+    border: 2px solid #1a73e8; /* Blue border */
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #e3f2fd; /* Light blue background */
+    color: #333333; /* Black text */
+    margin: 20px 0;
+}
+
+/* Centered banner for major sections */
+.banner {
+    background-color: #1a73e8; /* Blue background */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+/* Add border to all code chunks */
+pre {
+    border: 1px solid #333333;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    color: #333333; /* Black text color */
+}
+
+/* Styling for images */
+img {
+    border: 2px solid #1a73e8;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+/* Styling for tables with a formal look */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 15px 0;
+    font-size: 0.9em;
+}
+table, th, td {
+    border: 1px solid #cccccc;
+    padding: 8px;
+}
+th {
+    background-color: #f2f2f2;
+    color: #333333; /* Black header text */
+    font-weight: bold;
+    text-align: center;
+}
+td {
+    text-align: left;
+}
+
+/* Two-column layout */
+.column-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+.column {
+    width: 48%;
+    padding: 15px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    color: #333333;
+}
+
+/* Highlighted quote or key point */
+.highlighted-text {
+    font-style: italic;
+    color: #1a73e8; /* Blue for highlighted text */
+    background-color: #e3f2fd; /* Light blue background */
+    padding: 10px;
+    border-left: 4px solid #1a73e8;
+    margin: 20px 0;
+}
+
+/* Centered text with background */
+.centered-text {
+    background-color: #e0f2f1; /* Light teal background */
+    color: #1a73e8; /* Blue text */
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+/* Inline code styling for functions and dataset names */
+code {
+    color: #2e7d32; /* Dark green text */
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+}
+
+/* Footer and footnotes styling */
+footer, .footnotes {
+    text-align: center;
+    color: #777777;
+    font-size: 0.9em;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #cccccc;
+    line-height: 1.4;
+}
+
+/* Footnote styling */
+.footnotes {
+    font-size: 0.85em; /* Slightly smaller text for footnotes */
+    color: #555555; /* Dark gray for footnotes */
+}
+
+.footnotes a {
+    color: #1a73e8; /* Blue for footnote links */
+    text-decoration: none;
+}
+
+.footnotes a:hover {
+    text-decoration: underline;
+    color: #005cbf; /* Darker blue on hover */
+}
+
+</style>
+
+---
+### **1. Introduction**
+The research question- "How do key economic and social factors (Child Mortality Rate,GDP per Capita, Fertility Rate, Immunization Coverage (DPT)) influence child mortality rates in developing countries?" has been chosen because of the strong desire to understand the influence of not only economic but also social factors on child mortality, which is still a major issue in many developing countries. That is why a reduction in infant and child mortality is a worldwide target. It is also one of the most important key indices among Millennium Development Goals concerning the reduction of infant and under-five child mortality rates to two-thirds from that of the 1990 level by 2015 (Desta, 2011). This paper addresses the questions of how GDP per Capita, Fertility Rate, and Immunization Coverage are related to child mortality, and from these questions, we hope to uncover insights that could lead to better health and economic policies.
+
+The research's novelty lies in its comprehensive—almost integrative—approach. It not only examines the relationship between economic variables and health outcomes but also connects these outcomes with demographic characteristics. This makes the research fairly unique; or at least it examines territory that's not part of many existing studies. And the significance of the research question is hard to understate: if we can identify the key economic and social variables that influence child mortality, we just might be able to impact the overall rate and improve sustainability in some very vulnerable regions.
+
+Child mortality is calculated by comparing the number of children who die before their fifth birthday to 1,000 live births serves as a key indicator of a country's health care system and overall societal conditions.(Oloo, 2005). Wealth distribution, education, public policy, and a host of other factors affect the mortality rate in this age group. In developing countries, where half of the children who die each year within five-years of age, the condition is both a health care problem and an economics problem. Indeed, child mortality is a classic frontier problem at the intersection of health care and economics that many researchers have attempted to solve.
+
+An indicator of a country's income and its apparent ability to invest in the kinds of infrastructure that could stretch health-care resources further, GDP per capita is a number that generally reflects something close to a nation's standard of living. Nations that are rich in per capita terms have far better health-service access and operational ability than poor countries to reduce the child mortality rate. Another indicator considered is fertility rate, it is an important indicator of child survival (Chowdhury, 1988; Schultz, 1978). Basically it is the average number of children born to a woman in her lifetime if current birth rates hold, this indicator is directly linked to mother's health which would inturn have relation to a child's health. One significant cause of child mortality is Immunization coverage i.e the lack of timely immunizations and vaccines for diseases that are easily prevented and controlled. According to the World Health Organization, vaccines save about 3 million lives yearly, and prevention of as many as 1.5 million deaths of children under 5 years is possible if all children under five years get access to vaccines.(Oloo, 2005). In high-income places, public health has succeeded to the point that very few children die from diphtheria, pertussis, and tetanus; on the other hand, in places with very low incomes and poor access to health resources, many children fail to survive that crucial window between birth and age five.
+
+This study examines the effects of three factors—per capita GDP, fertility rate, and immunization coverage—on child mortality in developing nations from 1980 to 2022. Using multiple regression analysis and data visualization, this study endeavours to find the quantified effects that these variables had on child mortality rates during that time span. The results will also provide evidence of how economic growth, parental choices, and access to healthcare have shaped the developing world's child health outcomes in the developing world over a critical 42-year period.
+
+### **2. Data Collection and Wrangling**
+Four datasets from Gapminder form the basis of the analysis. They represent the child mortality rates and important socioeconomic factors in developing countries from 1980 to 2022. The datasets concern child mortality, GDP per capita, fertility rates, and immunization coverage. The relationships among these variables are of primary interest. The analysis employs several R libraries, which supply the necessary tools to accomplish the three key tasks of any data project: data wrangling, cleaning, and visualization.
+
+#### **Libraries Used**
+
+```{r include=FALSE, warning=FALSE, message=FALSE}
+# These libraries are essential for transforming the data cleaning,datasets, merging them, and visualizing the final analysis:
+
+#- **`readr` and `readxl`**: For reading data from Excel files.
+#- **`tidyverse`**: Provides a collection of R packages including `dplyr`, `ggplot2`, and #`tidyr` for data manipulation, visualization, and cleaning.
+#- **`janitor`**: For cleaning and standardizing column names.
+#- **`stringr`**: For handling string operations, such as extracting characters from numeric #values in the GDP dataset.
+#- **`lubridate`**: For managing date and time data.
+#- **`ggplot2`**: For creating visualizations.
+ 
+# Data import and manipulation
+library(readr)           # For reading data from text files (e.g., CSV)
+library(rvest)           # For web scraping HTML content
+library(httr)            # For making HTTP requests in web scraping
+library(xml2)            # For handling XML and HTML data structures
+library(tidyverse)       # For data manipulation and visualization (includes ggplot2, dplyr, and others)
+library(jsonlite)        # For reading and writing JSON data
+library(dplyr)           # For data manipulation (part of tidyverse, loaded separately for clarity)
+
+# Data sources and visualization
+library(gapminder)       # Contains Gapminder data on world development indicators
+library(ggplot2)         # For creating data visualizations (part of tidyverse)
+library(lubridate)       # For working with dates and times in data
+library(ggthemes)        # For additional themes and formatting in ggplot2 visualizations
+
+# String manipulation and data cleaning
+library(stringr)         # For working with and manipulating strings
+library(janitor)         # For data cleaning, especially creating tidy data frames
+
+# Data import and structure
+library(haven)           # For importing and exporting SPSS, Stata, and SAS files
+library(tibble)          # For creating and manipulating tibbles (enhanced data frames)
+
+# Parallel processing and performance
+library(parallel)        # For parallel computing, used for faster computations
+
+# Excel and model summary
+library(readxl)          # For reading Excel files
+library(broom)           # For tidying up model output into a data frame format
+library(kableExtra)      # For enhancing tables created with knitr::kable()
+library(knitr)           # For creating dynamic reports, tables, and formatting
+
+```
+#### **Datasets Overview**
+
+1. **Child Mortality Rate (deaths per 1,000 live births)**: 
+   - **Description**: This dataset contains the number of children under 5 who die per 1,000 live births, for each country and year. It is typically set up with countries as the rows and years as the columns, with each cell representing the mortality rate for that year in a given country. 
+
+   - **Structure**: The data has countries as rows and years (e.g., 1980, 1981, ..., 2022) as columns. Each cell has the child mortality rate for that country-year combination.
+     - Data type: Numeric (rate of child mortality).
+     
+   - **Significance**: Child mortality rate is a key measure of the effectiveness of health systems, and it also reflects about the overall socio-economic conditions. High rates indicate: inadequate access to healthcare, poor living conditions, or a healthcare system generally under-resourced. And in this study, the child mortality rate is the **dependent variable**, meaning the study will aim to explain variations in this rate based on other factors.
+
+
+2. **GDP per Capita**: 
+   - **Description**: This dataset measures the gross domestic product (GDP) of individual countries, effectively representing the wealth and income per citizen on average. The figures that you will see in the dataset are in units of "dollars per capita." Sometimes, figures are expressed in rounded terms. For instance, a figure that might be closer to "26,000" will simply be rendered as "26k."
+   
+   - **Structure**: Similar to the child mortality dataset, each row represents a country, and each column represents a year (e.g., 1980, 1981, ..., 2022). The cells contain the GDP per capita for that country in that year.
+     - Data type: Numeric (dollars per capita, sometimes in units like "k" to denote thousands).
+     
+   - **Significance**: It has immense significance for understanding the economics of healthcare systems. The reason why GDP per capita speaks volumes about healthcare is that it represents a society's capacity to fund such systems. If an average citizen has more money, then the systems that serve that citizen are more likely to be well-funded. Higher GDP per capita typically correlates with better healthcare infrastructure, leading to lower child mortality rates. In this study, GDP per capita is one of the **independent variables** that will be used to explain differences in child mortality across countries.
+
+
+3. **Fertility Rate**:
+   - **Description**: The fertility rate dataset contains the average number of children born to a woman has in her lifetime if current birth rates hold. We track this variable for different countries over time and is a key socio-demographic variable.
+   
+   - **Structure**: The structure is similar to the other datasets, with countries as rows and years as columns. Each cell contains the fertility rate for a specific country-year combination.
+     - Data type: Numeric (average number of children per woman).
+     
+   - **Significance**: High fertility rates can lead to resource strains both within families and in national healthcare systems, potentially increasing child mortality rates. Countries with high fertility rates often have more children to care for, which can spread available resources thin. Fertility rate is another **independent variable** in this analysis, and its relationship with child mortality is of particular interest.
+
+
+4.  **Immunization Coverage (DPT)**:
+   - **Description**: This dataset tracks the percentage of children in each country who have received the diphtheria, pertussis, and tetanus (DPT) vaccine. Immunization coverage is one of the most straightforward, indicators of that basic healthcare getting to kids and is closely tied to child survival rates, as it prevents deadly diseases.
+   
+   - **Structure**: Like the other datasets, it has rows of countries and columns of years. In each cell, for each year and country, is the figure for the percentage of kids under five who got the shot.
+     - Data type: Numeric (percentage of children immunized).
+     
+   - **Significance**: Immunization coverage is critical for reducing preventable childhood deaths. Countries with higher vaccination rates generally have lower child mortality rates. This dataset provides insight into how public health interventions can lower child mortality, making it a key **independent variable** in the analysis.
+
+Each of these data sets captures a critical aspect of the dynamics of child mortality, hence enabling us to explore how the rates of child mortality are influenced by wealth approximated by GDP, demographic pressures approximated by fertility, and access to healthcare proxied by immunization coverage. Because the datasets are so well structured, we can also look at them in a couple of different ways. We can see what these factors cumulatively might have been doing to child mortality rates (paying more attention to the appearance of trends over time) and, with the aid of regression analysis, what they might have been doing vis-à-vis each other from 1980 to 2022.
+
+Several transformations and cleaning steps were required to prepare the datasets for analysis. These include standardizing column names, converting data to long format, handling missing values, and merging the datasets.
+
+#### **Loading the Data**
+   - The datasets were imported from Excel files using the `read_excel()` function from the `readxl` package. After loading, the `clean_names()` function from the `janitor` package was used to standardize the column names, removing special characters and spaces for easier manipulation.
+
+```{r include=TRUE, warning=FALSE, message=FALSE}
+# Load the datasets(Child Mortality Rate, Fertility Rate, Immunization Coverage (DPT),GDP per Capita)
+
+child_mortality <- read_excel("/Users/chinmayshetty/Downloads/SEM2/BA - R/Assignment/child_mortality_0_5_year_olds_dying_per_1000_born.xlsx") %>% clean_names()
+
+gdp <- read_excel("/Users/chinmayshetty/Downloads/SEM2/BA - R/Assignment/gdp_pcap.xlsx")  %>% clean_names()
+
+fertility <- read_excel("/Users/chinmayshetty/Downloads/SEM2/BA - R/Assignment/sp_dyn_tfrt_in.xlsx")  %>% clean_names()
+
+immunization <- read_excel("/Users/chinmayshetty/Downloads/SEM2/BA - R/Assignment/sh_imm_idpt.xlsx") %>% clean_names()
+```
+
+   - **Explanation**: `clean_names()` ensures that the column names are consistent and easier to work with, avoiding issues caused by spaces or special characters in the dataset headers.
+   
+#### **Handling GDP Data with Units**
+   - We also had values like “k” standing for thousands in some of the columns of the GDP dataset. This was standardized by using the function `parse_number()` to extract the numeric value and using another function `case_when()` to adjust values by multiplying it by 1,000 where the unit “k” was detected. After cleaning up the GDP data, that is, converting values into consistent units using the functions such as `parse_number()` and `case_when()`, goes the step of cleaning up the result of data transformation and selecting just those columns which afterwards would go further into analysis.
+
+```{r include=FALSE, warning=FALSE, message=FALSE}
+gdp1 <- pivot_longer(gdp, cols = -country, names_to = "year", values_to = "gdp_per_capita", values_transform = list(gdp_per_capita = as.character),values_drop_na = T )
+
+gdp2 <- gdp1 %>% 
+  mutate(number = parse_number(gdp_per_capita),
+         unit =gsub("[^a-zA-Z]", "", gdp_per_capita))
+
+gdp2$unit %>% unique()
+```
+```{r include=TRUE, warning=FALSE, message=FALSE}
+gdp3 <- gdp2 %>% 
+  mutate(gdp_new = case_when(unit =="k" ~ number * 1000,
+                             TRUE ~ number))
+
+gdp_long <- gdp3 %>%  select (country, year,gdp_new)
+```
+
+- **Explanation**: This will convert the GDP values from the original set into consistent numeric values. Here, the `case_when()` function is used to make sure that GDP values with unit “k” stand for thousands and will multiply it by 1,000 for consistency across the dataset. For other cases(where no unit is provided)the GDP values remain as is. Thus, the GDP values have now been set for analysis in numeric format as actual GDP per capita. By transforming GDP values, it then selects relevant columns through the function `select()`, which are `country`, `year`, and the new `gdp_new`. This removes additional columns from the original dataset and retains a clean, long-format GDP dataset where every row corresponds to a country-year combination with the particular value of GDP.
+
+#### **Pivoting Data to Long Format**
+   - All these datasets were in wide format, with each year in a different column. Then, the `pivot_longer()` function from the `tidyr` package was used to change these datasets into the long format, hence making time-series analysis easier to carry out. This transforms all the year columns into one “year” column, with the respective values (child mortality, GDP etc.) in another column itself. Then, we reshape Fertility Rate and Immunization Coverage, just like Child Mortality Rate, into the long shape for further analysis.
+
+```{r include=TRUE, warning=FALSE, message=FALSE}
+# Transforming data to long format for easy manipulation(Child Mortality Rate, Fertility Rate, Immunization Coverage (DPT))
+child_mortality_long <- pivot_longer(child_mortality, cols = -country, names_to = "year", values_to = "child_mortality_rate", values_drop_na = T)
+```
+   - **Explanation**: Long format is easier to manipulate with regard to data across multiple years for every country, thus enabling us to conduct time-series analysis with more ease. Moreover, the `values_drop_na = TRUE` parameter means that each row whose value is NA will not be taken into consideration in this present analysis.
+
+```{r include=TRUE, warning=FALSE, message=FALSE}
+fertility_long <- pivot_longer(fertility, cols = -country, names_to = "year", values_to = "fertility_rate", values_drop_na = T)
+```
+
+- **Explanation**: This will convert the **fertility rate** dataset from a wide format in which each year is a separate column to a long format. In this `pivot_longer()` function, it created two new columns: one for `year`, which holds the years; and one for `fertility_rate`, which takes the value of fertility rate for each country across each of these years. The `values_drop_na = TRUE` will ensure that, in case of a row having a missing value for the fertility rate, it would not be included in the data set. In its long structure, a format is necessary for time-series analysis with merge onto other data sets.
+
+```{r include=TRUE, warning=FALSE, message=FALSE}
+immunization_long <- pivot_longer(immunization, cols = -country, names_to = "year", values_to = "immunization_coverage", values_drop_na = T)
+```
+
+- **Explanation**: This code further reshapes the **immunization coverage** dataset into long format. For every country-year pair, there is a value that represents the percentage of children immunized against diphtheria, pertussis, and tetanus—DPT. To analyze this across time, it will allow an easy merge of this data set with the others. As we have done previously with the fertility data, `values_drop_na = TRUE` removes observations for which values are missing.
+
+These steps are very critical for the stages of regression and visualization in the analysis, and consistency will be maintained throughout all the datasets.
+
+#### **Merging Datasets**
+   - These long-formatted datasets were then merged using `inner_join()` by country and year. This kind of inner join means that only those rows with full information in each variable will remain; thus, it creates a single dataset analyzable in depth concerning the relationships between child mortality, GDP per capita, fertility rate, and immunization coverage across countries and over time.
+
+```{r include=TRUE, warning=FALSE, message=FALSE}
+# Merging datasets by country and year
+
+merged1 <- child_mortality_long %>% 
+  inner_join(gdp_long, by = c("country", "year")) %>% 
+  inner_join(fertility_long, by = c("country", "year")) %>% 
+  inner_join(immunization_long, by = c("country", "year"))
+
+view(merged1)
+```
+
+- **Explanation**: The function `inner_join()` combines the datasets on matching `country` column and `year`. Using `inner_join()`, it should be ensured that all variables do not have any missing values, as it only retains rows with complete data. Therefore, this ensures in the merged dataset (`merged1`), merged1, there are only country-year combinations where complete data about child mortality, GDP, fertility rate, and immunization coverage exist. This consistency will guarantee proper analysis without biases from missing values.
+
+```{r include=TRUE, warning=FALSE, message=FALSE}
+merged2 <- merged1 %>% rename(gdpPercap = gdp_new)
+view(merged2)
+```
+
+- **Explanation**: In `merged2`, the code renames it renames the column name from `gdp_new` to `gdpPercap`. It was important to ensure that later on during analysis and interpretation, this variable of GDP per capita would easily be identifiable since this variable would be frequently used in visualizations and regression modeling.
+
+```{r include=TRUE, warning=FALSE, message=FALSE}
+merged3 <- merged2 %>% 
+  mutate(year =gsub("x", "", year))
+view(merged3)
+
+```
+- **Explanation**: This uses the `mutate()` function to clean the column `year` of all non-numeric characters, precisely “x, from the values in the column `year`. That way, it is ensured the `year` column will be in numeric variable format and hence can be used for analysis of time and accordingly plot the trends.
+
+The resulting set, `merged3`, is now fully ready with scopes of child mortality, GDP per capita, fertility rate, and immunization coverage, all full and consistently formatted. This dataset now has each row representing a country-year combination, hence ready for succeeding steps of visualization and regression analysis that shall be done in order to show factors that amount to child mortality in developing countries.
+
+#### **Filtering for Selected Years (1980–2022)**
+   - In this analysis, we have chosen to focus on the period from 1980 to 2022. One of the reasons for choosing this period is because of relevancy to today's times as really old data would not be that useful. Also data points before 1980 and after 2025 were excluded to keep the data uniformity across all the datasets and assure better reliability of the analysis. This limitation within the period was necessary to provide a proper visualization which would in turn help in meaningful and accurate analysis.
+
+```{r include=TRUE, warning=FALSE, message=FALSE}
+# Filter for years 1980-2022
+merged4 <- merged3 %>% filter(year >= 1980 & year <= 2022)
+view(merged4)
+```
+   - **Explanation**: This filter ensures that the analysis remains relevant to the research question, focusing on the 42-year period during which substantial changes in child mortality occurred.
+
+### **3. Key Visualizations and Trend Analysis**
+
+   - To facilitate visualizations and trend analysis, the data was grouped by year, and the total values for child mortality, GDP, fertility rate, and immunization coverage were calculated. This step summarizes the overall trends across all countries for each year.
+
+```{r, echo=TRUE, include=FALSE, warning=FALSE, message=FALSE}
+
+merged4$country %>% unique()
+
+merged5 <- merged4 %>% group_by(year) %>% mutate(tot_child_mortality_rate = sum(child_mortality_rate, na.rm = TRUE), tot_gdp= sum (gdpPercap, na.rm = TRUE), tot_fertility_rate = sum(fertility_rate, na.rm = TRUE), tot_immunization_cover = sum(immunization_coverage, na.rm = TRUE))
+view(merged5)
+```
+- **Explanation**: To confirm the dataset’s geographical coverage, `unique()` is applied to `merged4$country`, listing all unique countries included in the dataset. This check ensures that the merged dataset encompasses a representative sample of developing countries.
+
+Next, the data is grouped by `year`, and yearly totals for each variable are calculated. Using `mutate()`, the total child mortality rate, total GDP, total fertility rate, and total immunization coverage are summed across all countries for each year, resulting in new columns (`tot_child_mortality_rate`, `tot_gdp`, `tot_fertility_rate`, and `tot_immunization_cover`) in `merged5`. These yearly totals enable trend analysis across all variables over time, providing insights into how economic and social factors have evolved alongside child mortality rates in developing countries.
+
+The final `view(merged5)` allows us to inspect the dataset and confirm that the new columns for yearly totals are correctly added and that the data is prepared for visualizations and regression analysis.
+This finalized dataset (`merged5`) now includes both individual country-year data and yearly totals, making it well-suited for trend analysis and predictive modeling to investigate the factors influencing child mortality.
+
+
+#### **3.1 Child Mortality Rate Over Time (1980–2022)**
+
+The line chart below illustrates changes in the child mortality rate from 1980 to 2022, with each point representing the total mortality rate calculated across all developing countries in the dataset.
+
+```{r include=TRUE, warning=FALSE, message=FALSE}
+merged5$year <- as.numeric(as.character(merged5$year))
+
+ggplot(merged5, aes(x = year, y = tot_child_mortality_rate)) +
+  geom_line(color = "#1a73e8", size = 1.2, alpha = 0.8) +  # Primary blue line with slight thickness
+  geom_point(color = "#0d47a1", alpha = 0.9, size = 3) +  # Darker blue points for contrast
+  labs(
+    title = "Child Mortality Rate Over Time (1980-2022)",
+    x = "Year",
+    y = "Mortality Rate (per 1000 live births)"
+  ) +
+  scale_x_continuous(breaks = seq(1980, 2022, by = 5)) +  # Show every 5 years for more detail
+  theme_minimal() +
+  theme(
+    plot.title = element_text(color = "#0d47a1", size = 16, face = "bold", hjust = 0.5),  # Centered, dark blue title
+    axis.title.x = element_text(color = "#37474f", size = 12, face = "bold"),  # Gray-blue x-axis title
+    axis.title.y = element_text(color = "#37474f", size = 12, face = "bold"),  # Gray-blue y-axis title
+    axis.text.x = element_text(angle = 45, hjust = 1, color = "#546e7a"),  # Medium gray x-axis labels
+    axis.text.y = element_text(color = "#546e7a"),  # Medium gray y-axis labels
+    panel.grid.major = element_line(color = "#cfd8dc", size = 0.5),  # Light gray grid lines
+    panel.grid.minor = element_blank()  # Hides minor grid lines for cleaner look
+  )
+
+
+
+```
+
+- **Code Explanation**:
+   - `ggplot(merged5, aes(x = year, y = tot_child_mortality_rate))`: This begins the plot using `ggplot2`, where `merged5` is its data source. Here, `year` is mapped to the x-axis, and `tot_child_mortality_rate`, being that yearly-aggregated child mortality rate across countries, is then mapped to the y-axis.
+   - `geom_line(alpha = 0.6)`: Adds a line connecting the data points in the plot, hence showing graphically the trend across the time. The `alpha` here is a transparency parameter taken as 0.6 to get a softer line while showing the underlying data points more visibly.
+   - `geom_point(alpha = 0.8, size = 2)`: Adds individual points to the plot at each year with a slight transparency (`alpha = 0.8`) and a size of 2 to show the value of mortality rate for each year, which will make the specific data value and fluctuation in the data more observable.
+   - `labs(...)`: Here, labels are added to the plot by giving the title and x and y-axis labels.
+   - `theme_minimal()`: This argument uses a minimalistic theme for the plot: no grid lines, along with other distracting elements, are eliminated so that the trend line can stand out more profoundly along with data points.
+
+- **Explanation and Analysis**: 
+   - **Graph Observation**: As seen in the line chart, the child mortality rate shows a high starting point in 1980, approximately around 12,000 deaths per 1,000 live births, indicating a challenging period for child survival in developing regions. The early 1980s appear to experience an increase in child mortality, potentially reflecting various socio-economic challenges, limited healthcare access, or other crises impacting child health.
+
+   - **Trend Analysis**: Following this peak, the mortality rate begins a gradual decline, indicating improvements in healthcare access, immunization, and general living conditions across these countries. Notably, the decline is not entirely smooth; there are slight fluctuations during the 1990s, suggesting that certain regions may have faced setbacks or temporary obstacles in sustaining reductions in child mortality.
+
+   - **Critical Insight**: By the end of the observed period in 2022, the child mortality rate has dropped significantly to around 6,000 deaths per 1,000 live births. This halving of child mortality over 42 years reflects the impact of global health initiatives, increased economic development, and a focus on maternal and child healthcare. International efforts, such as the Millennium Development Goals, which prioritized reducing child mortality, likely contributed to this positive trend. The steady decline also suggests a gradual improvement in healthcare infrastructure, immunization coverage, and access to essential health services in developing countries.
+
+   - **Implications**: This visualization underscores the progress made over decades while highlighting the areas that still required attention at the time. Despite the marked improvements, child mortality in developing countries remained higher than in developed regions, emphasizing the need for sustained global efforts and targeted interventions to further reduce these rates and promote equitable healthcare access for all children.
+
+#### **3.2 Total Child Mortality Rate vs. Total GDP**
+
+This scatter plot examines the relationship between a country’s economic wealth, as represented by Total GDP, and its child mortality rate. The plot uses data from the merged dataset to highlight how economic performance might impact child health and survival rates in developing countries.
+
+```{r include=TRUE, warning=FALSE, message=FALSE}
+# Plot Total Child Mortality Rate vs. Total GDP
+ggplot(merged5, aes(x = tot_gdp, y = tot_child_mortality_rate)) +
+  geom_point(color = "#0d47a1", size = 3, alpha = 0.7) +  # Dark blue points with slight transparency
+  geom_smooth(method = "lm", color = "#1a73e8", size = 1.2, se = FALSE) +  # Blue regression line
+  labs(
+    title = "Total Child Mortality Rate vs. Total GDP",
+    x = "Total GDP (in USD)",
+    y = "Total Child Mortality Rate (per 1,000 live births)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(color = "#0d47a1", size = 16, face = "bold", hjust = 0.5),  # Centered, dark blue title
+    axis.title.x = element_text(color = "#37474f", size = 12, face = "bold"),  # Gray-blue x-axis title
+    axis.title.y = element_text(color = "#37474f", size = 12, face = "bold"),  # Gray-blue y-axis title
+    axis.text.x = element_text(color = "#546e7a"),  # Medium gray x-axis labels
+    axis.text.y = element_text(color = "#546e7a"),  # Medium gray y-axis labels
+    panel.grid.major = element_line(color = "#cfd8dc", size = 0.5),  # Light gray grid lines
+    panel.grid.minor = element_blank()  # Hides minor grid lines for a cleaner look
+  )
+
+```
+
+- **Code Explanation**:
+   -`ggplot(merged5, aes(x = tot_gdp, y = tot_child_mortality_rate))`: Initiates a `ggplot` object by taking the variable `tot_gdp` for the x axis and the variable `tot_child_mortality_rate` for the y-axis in the dataset `merged5`. In this case, `tot_gdp` refers to the aggregated GDP between countries at each year, while `tot_child_mortality_rate` refers to aggregated child mortality rate.
+   -`geom_point()`: this layer maps the relationship between GDP and child mortality rate for every single year. Each discrete point in this layer represents a distinct year in the dataset its coordinates being determined by the total GDP and the total child mortality rate of the given year.
+   -`geom_smooth(method = "lm", color = "blue", se = FALSE)`: Adds a best fit line by doing a linear model (`method = "lm"`), which will give us an idea of the trend of our data. The line color is blue and with `se = FALSE` we disable the confidence interval display around the line, and can see through it to the trend line.
+   -`labs(...)`: Labels the plot. The title should read “Total Child Mortality Rate vs. Total GDP”, while the x- and y-axis labels should be “Total GDP (in USD)” and “Total Child Mortality Rate (per 1,000 live births)” respectively.
+   -`theme_minimal()`): a minimal theme for plot display with extra details removed. The background can be clean so that the data points and trend line are the focus.
+
+- **Explanation and Analysis**:
+   - **Graph Observation**: The scatter plot and trend line reveal a clear negative relationship between GDP and child mortality. As total GDP increases, the child mortality rate consistently decreases. In the initial lower GDP range (around 1,500,000 USD), child mortality rates are relatively high, reaching up to 12,000 deaths per 1,000 live births. However, as GDP rises to around 3,500,000 USD, child mortality rates drop significantly to around 7,000 deaths per 1,000 live births.
+   
+   - **Critical Insight**: This negative correlation suggests that countries with higher GDP tend to have lower child mortality rates. Higher GDP often translates to better funding for healthcare infrastructure, increased immunization coverage, improved maternal and child healthcare services, and greater access to essential resources like clean water, nutrition, and sanitation facilities. This trend underlines the importance of economic growth and wealth distribution in enhancing child health outcomes in developing countries.
+
+   - **Implications**: The relationship between GDP and child mortality emphasizes the role of economic resources in achieving lower child mortality rates. Policy implications of this trend could advocate for strategies that boost economic performance alongside public health initiatives. Countries with lower GDP may need targeted international support to improve child health outcomes, highlighting the role of global development organizations in mitigating disparities and supporting healthcare access in economically constrained regions.
+
+
+#### **3.3 Total Child Mortality Rate vs. Total Fertility Rate**
+
+This plot illustrates the relationship between fertility rates and child mortality, exploring whether larger family sizes are associated with higher child mortality rates in developing countries.
+
+
+```{r include=TRUE, warning=FALSE, message=FALSE}
+# Plot Total Child Mortality Rate vs. Total Fertility Rate
+ggplot(merged5, aes(x = tot_fertility_rate, y = tot_child_mortality_rate)) +
+  geom_point(color = "#0d47a1", size = 3, alpha = 0.7) +  # Dark blue points with slight transparency
+  geom_smooth(method = "lm", color = "#1a73e8", size = 1.2, se = FALSE) +  # Blue regression line
+  labs(
+    title = "Total Child Mortality Rate vs. Total Fertility Rate",
+    x = "Total Fertility Rate",
+    y = "Total Child Mortality Rate (per 1,000 live births)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(color = "#0d47a1", size = 16, face = "bold", hjust = 0.5),  # Centered, dark blue title
+    axis.title.x = element_text(color = "#37474f", size = 12, face = "bold"),  # Gray-blue x-axis title
+    axis.title.y = element_text(color = "#37474f", size = 12, face = "bold"),  # Gray-blue y-axis title
+    axis.text.x = element_text(color = "#546e7a"),  # Medium gray x-axis labels
+    axis.text.y = element_text(color = "#546e7a"),  # Medium gray y-axis labels
+    panel.grid.major = element_line(color = "#cfd8dc", size = 0.5),  # Light gray grid lines
+    panel.grid.minor = element_blank()  # Hides minor grid lines for a cleaner look
+  )
+
+```
+
+- **Code Explanation**:
+   - `ggplot(merged5, aes(x = tot_fertility_rate, y = tot_child_mortality_rate))`: This initializes the plot using `tot_fertility_rate` for the x-axis and `tot_child_mortality_rate` for the y-axis from the `merged5` dataset. `tot_fertility_rate` represents the aggregated fertility rates per year, while `tot_child_mortality_rate` reflects the corresponding aggregated child mortality rates.
+   - `geom_point()`: This layer displays individual data points, each representing a year, with the fertility rate and child mortality rate for that year.
+   - `geom_smooth(method = "lm", color = "blue", se = FALSE)`: This adds a linear trend line to the plot, computed using a linear model (`method = "lm"`). The line is blue, and `se = FALSE` omits the confidence interval around the trend line for simplicity, allowing the relationship to be observed clearly.
+   - `labs(...)`: This labels the plot, with the title "Total Child Mortality Rate vs. Total Fertility Rate," the x-axis labeled as "Total Fertility Rate," and the y-axis labeled as "Total Child Mortality Rate (per 1,000 live births)."
+   - `theme_minimal()`: This theme provides a clean, minimalistic background that highlights the data points and trend line.
+
+- **Explanation and Analysis**:
+   - **Observation**: The plot shows a strong positive correlation between fertility rates and child mortality rates. As fertility rates increase, the total child mortality rate also tends to increase. Countries with higher fertility rates, which often correspond to larger average family sizes, experience higher child mortality rates. The linear trend line accentuates this positive relationship, indicating that countries with higher fertility rates are more likely to have elevated child mortality rates.
+   
+   - **Critical Insight**: The positive correlation between fertility rates and child mortality rates can be attributed to several factors in developing countries. Higher fertility rates often lead to resource constraints within families and communities. Larger families may face challenges in allocating sufficient resources—such as food, healthcare, and education—to each child. Additionally, countries with high fertility rates may have limited healthcare infrastructure, which can further stress maternal and child health services. This relationship underscores the importance of family planning, improved healthcare access, and maternal health education to reduce child mortality rates in high-fertility regions.
+
+   - **Implications**: The relationship observed here suggests that policies aimed at lowering fertility rates through family planning and reproductive health education could potentially contribute to reducing child mortality. Furthermore, increased investment in healthcare resources and maternal health support could help mitigate the impact of high fertility rates on child mortality, thereby improving child health outcomes in regions with traditionally larger family sizes.
+
+#### **3.4 Total Child Mortality Rate vs. Total Immunization Coverage**
+
+This graph investigates the influence of immunization coverage on child mortality rates, providing insights into the protective effect of vaccinations in reducing child mortality.
+
+```{r include=TRUE, warning=FALSE, message=FALSE}
+# Plot Total Child Mortality Rate vs. Total Immunization Coverage
+ggplot(merged5, aes(x = tot_immunization_cover, y = tot_child_mortality_rate)) +
+  geom_point(color = "#0d47a1", size = 3, alpha = 0.7) +  # Dark blue points with slight transparency
+  geom_smooth(method = "lm", color = "#1a73e8", size = 1.2, se = FALSE) +  # Blue regression line
+  labs(
+    title = "Total Child Mortality Rate vs. Total Immunization Coverage",
+    x = "Total Immunization Coverage (%)",
+    y = "Total Child Mortality Rate (per 1,000 live births)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(color = "#0d47a1", size = 16, face = "bold", hjust = 0.5),  # Centered, dark blue title
+    axis.title.x = element_text(color = "#37474f", size = 12, face = "bold"),  # Gray-blue x-axis title
+    axis.title.y = element_text(color = "#37474f", size = 12, face = "bold"),  # Gray-blue y-axis title
+    axis.text.x = element_text(color = "#546e7a"),  # Medium gray x-axis labels
+    axis.text.y = element_text(color = "#546e7a"),  # Medium gray y-axis labels
+    panel.grid.major = element_line(color = "#cfd8dc", size = 0.5),  # Light gray grid lines
+    panel.grid.minor = element_blank()  # Hides minor grid lines for a cleaner look
+  )
+
+```
+
+- **Code Explanation**:
+  - `ggplot(merged5, aes(x = tot_immunization_cover, y = tot_child_mortality_rate))`: This sets up the plot using `tot_immunization_cover` for the x-axis and the `tot_child_mortality_rate` for the y-axis of the `merged5` data. Here, `tot_immunization_cover` represents the aggregate immunization coverage, while `tot_child_mortality_rate` is the total child mortality rate across the years.
+   - `geom_point()`: This layer maps the individual data points showing the yearly relation between immunization coverage and the rate of a child’s mortality.
+   - `geom_smooth(method = "lm", color = "blue", se = FALSE)`: This adds a linear regression trend line to depict the negative correlation between immunization and child mortality. The argument `se = FALSE` removes the confidence interval shading around the trend line for clarity.
+   - `labs(...)`: This function labels the plot with a descriptive title, an x-axis label representing “Total Immunization Coverage (%)”, and y-axis label representing “Total Child Mortality Rate per 1,000 live birth”.
+   - `theme_minimal()`: It will give a very minimalistic theme. It will give a plain background so that one’s attention gets drawn towards the data points and the trend line itself.
+
+- **Explanation and Analysis**:
+   - **Observation**: The plot reflects a negative relationship between immunization coverage and child mortality rates; the higher the percentage increases in immunization coverage, the lower child mortality rates go. This inverse relationship is further emphasized by the linear trend line, allowing one to observe that countries with high immunization rates hold lower child mortality rates.
+   
+   - **Critical Insight**: Immunization is a vital public health measure that significantly impacts child survival. By increasing vaccination coverage, countries can prevent common and deadly childhood diseases such as diphtheria, pertussis, and tetanus. This correlation suggests that increased access to immunization programs and healthcare services can effectively reduce child mortality, especially in developing countries where preventable diseases still pose significant risks to child health.
+
+   - **Implications**: The inverse relationship highlighted in the plot underscores the importance of investing in and expanding immunization programs. For policymakers, this suggests that prioritizing immunization can be a cost-effective strategy to reduce child mortality rates. By expanding vaccine access, especially in underprivileged areas, countries can achieve substantial improvements in child health outcomes and progress towards sustainable development goals.
+
+### **4. Regression Analysis**
+
+The impact of per capita GDP, fertility rates, and immunization coverage on child mortality was assessed using a multiple linear regression model. This approach was chosen because it allows the accurate reading and interpretation of the relationships between the variables in question and child mortality. With our model, we included the three aforementioned variables as "predictors" to form a better understanding of how they might individually and collectively influence child mortality rates.
+
+In the following analysis, the level of significance is considered to be 5% (α=0.05). This level of significance is generally considered in most of the statistical analysis because it provides an optimal balance between the identification of meaningful effects and reduced probability of Type I error (false positive). Thus, by setting α at 5%, this study tries to retain all the predictors that are statistically significant with child mortality while allowing reasonable tolerance for possible errors.
+
+A 5% significance level threshold gives us a good degree of certainty that any predictors with a p-value of less than this threshold provide a useful explanation of child mortality within our model. Considering the nature of our work, this level is both informative and practical. It is especially well-suited to exploratory and applied studies such as ours, in which an understanding of associations serves an essential basis for the formulation of potential policy and intervention strategies.
+
+```{r include=TRUE, warning=FALSE, message=FALSE}
+
+# Multiple Linear Regression Model for our Analysis
+
+model <- lm(child_mortality_rate ~ gdpPercap + fertility_rate + immunization_coverage, data = merged5)
+
+summary(model)
+
+# Generate a tidy summary of the model
+model_summary <- tidy(model)
+
+# Format the table with p-values and customized styling
+model_summary %>%
+  mutate(p.value = ifelse(p.value < 2e-16, "<2e-16 ***", formatC(p.value, format = "e", digits = 4))) %>%  # Display "<2e-16 ***" for very small p-values
+  kable("html", col.names = c("Term", "Estimate", "Std. Error", "t value", "P-value")) %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed")) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#1a73e8") %>%  # Header style
+  row_spec(which(as.numeric(model_summary$p.value) < 0.05), bold = TRUE, color = "black", background = "#0d47a1", extra_css = "color: black !important;") %>%  # Force black text for significant rows
+  column_spec(2, color = "black") %>%  # Color for estimates
+  column_spec(3:4, color = "black")  # Color for Std. Error and t value columns
+```
+
+#### **Code Explanation**
+The regression model is created using the `lm()` function in R, which stands for "linear model". 
+
+- **Function**: `lm()` function fits a linear model to the data. We specify `child_mortality_rate` as the dependent variable we aim to predict, and `gdpPercap`, `fertility_rate`, and `immunization_coverage` as the independent variables (or predictors) that we believe influence child mortality.
+  
+- **Formula**: The formula inside `lm()` is written as `child_mortality_rate ~ gdpPercap + fertility_rate + immunization_coverage`, indicating that the model predicts `child_mortality_rate` based on the other three variables.
+
+- **Data Argument**: We specify `data = merged5`, which tells the function to use our merged dataset containing relevant variables for each country and year.
+
+- **Summary**: `summary(model)` line produces a summary of the model’s output, including details on the intercept, coefficients, p-values, R-squared value, and residuals, which provide insights into the model's fit and the significance of each predictor.
+
+#### **Detailed Explanation of the Regression Output**
+
+- **R-Squared (0.7734)**:
+   - R squared value of 0.7734 explained that almost 77% of the variance in the child mortality rate is contributed by this model. This indicates a good fit and shows that main drivers of child mortality are determined by GDP per capita, fertility rate, and coverage of immunization.
+
+- **Intercept (44.88)**:
+   - The intercept reflects the baseline child mortality rate when GDP per capita, fertility rate, and immunization coverage are zero. Although it lacks real-world application (since these factors are never zero), it serves as a point of reference for interpreting the model's coefficients.
+
+#### **Analysis of Coefficients**:
+1. **GDP per Capita (-0.0002897)**:
+   - The negative coefficient for GDP per capita means the rise in the wealth of a country is associated with the decline in child mortality. Concretely, for an additional unit increase in the GDP per capita, the child mortality goes down by roughly 0.0002897, ceteris paribus. This is statistically significant with p < 2e-16, which is lesser tha the significance level of 5%.
+
+2. **Fertility Rate (19.5143153)**:
+   - The positive coefficient for fertility rate implies that as the average number of children per woman rises, child mortality rates also increase. This finding aligns with expectations since larger families may experience limited resources, impacting child health. A 1-unit increase in fertility rate corresponds to a 19.5143153 increase in child mortality, with high statistical significance (p < 2e-16, which is lesser tha the significance level of 5%.).
+
+3. **Immunization Coverage (-0.6786671)**:
+   - The negative coefficient of coverage for immunization denotes that the increase in vaccination rates has a consequence of reduced child mortality rates. A 1% increase in the immunization coverage results in a fall in child mortality of 0.6786671 for every 1,000 live births. This underlines the importance of vaccination for child survival, as it is statistically significant with p < 2e-16, which is lesser tha the significance level of 5%.
+
+#### **P-Values and Statistical Significance**:
+- The p-values computed for all predictor variables are less than 0.05. This signifies their statistical significance in predicting the rates of child mortality. The model is thereby assured of its robustness, that of GDP per capita, fertility rate, and immunization coverage in understanding child mortality.
+
+#### **Key Insights**:
+- **GDP per Capita**: Higher national wealth is associated with lower child mortality rates, likely due to improved healthcare access and living standards.
+- **Fertility Rate**: Higher fertility rates correlate with increased child mortality, suggesting that larger family sizes may strain healthcare resources and limit the care available per child.
+- **Immunization Coverage**: Higher immunization rates significantly reduce child mortality, emphasizing the effectiveness of vaccination programs in preventing childhood diseases and promoting survival.
+
+### **5. Conclusion**
+
+Death of children under five is one factor that defines the well-being of a population; thus, it is usually taken as one of the development indicators of health and socioeconomic status, indicating quality of life for a given population measured by life expectancy. (Bello and Joseph, 2014). This analysis looked at how GDP per capita, fertility rates, and vaccination rates affected child mortality in developing countries from 1980 to 2022, providing data-driven insights into the key factors influencing child health. 
+
+**Economic Growth (GDP per Capita)**: The regression analysis, as well as the trend lines in the scatter plots, shows a strong negative correlation between GDP per capita and the rates of child mortality, even J.A Oloo have hypothesized in his research paper that there is a negative correlation between the two.(Oloo, 2005). Also, the factors combined explained approximately 77% of the variation in child mortality. Other researchers have also concluded that an increase in GDP will reduce the child mortality in the long-run. (Asumadu-Sarkodie, Owusu and Zhang, 2016), If a country has an infant mortality of 50 per 1000 live births and the gross domestic product per capita purchasing power parity increases by 10%, the infant mortality will decrease to 45 per 1000 live births. This indicates that economic growth is a critical factor in reducing child mortality by enabling resources for better healthcare infrastructure and social support systems.
+
+**Fertility Rate**: As clearly evident from our analysis and also stated J.A Oloo there is a clear positive relationship between child mortality and fertility rates.(Oloo, 2005). High-fertility countries, such as Nigeria, have very high child mortality rates. In these countries, many children are born into families with limited resources. This situation is made worse by the fact that the healthcare systems in many high-fertility countries are already stretched far too thin. The only way to significantly turn around the dismal child survival statistics of high-fertility countries is to implement family planning programs promoting smaller family sizes to alleviate these pressures, reduce mortality rates, and improve overall child health outcomes.
+
+
+**Immunization Coverage**: The data clearly shows that increased immunization coverage has a very strong negative impact on child mortality. This further could be observed in the increased vaccination rate and reduced child mortality rate. Countries with strong immunization programs, such as India, had remarkable reduction in child mortality.The increase in usage of maternal and child health services leads to lower  infant and child mortality. (Rutstein). That again proves that vaccines play a very important role in combating preventable diseases. Therefore, one of the most influential variables involves immunization coverage. It would imply that increasing vaccine availability forms part of the affordable and essential methods for advancing child survival rates.
+
+In conclusion, this analysis inclines with the research question- "How do key economic and social factors influence child mortality rates in developing countries?",  which substantiates the economic growth, reduced fertility rates, and higher immunization coverage are pivotal in driving down child mortality rates in developing countries. The observed decline in child mortality from 1980 to 2022 reflects the collective impact of these factors. For continued progress, policymakers must work in concert to strengthen the economic underpinnings of developing countries, to roll out diversified public health initiatives broadly and with great vigor, and to educate citizens of those countries on the benefits and workings of modern family planning.
+
+### **6. References**
+
+Asumadu-Sarkodie, S., Owusu, P. A. and Zhang, X. (2016) ‘The casual nexus between child mortality rate, fertility rate, GDP, household final consumption expenditure, and food production index’, Cogent Economics & Finance, 4(1). doi: 10.1080/23322039.2016.1191985.
+
+Bello, R.A. & Joseph, A.I. (2014). Determinants of Child Mortality in Oyo State, Nigeria. African Research Review, 8(1), pp.252-272. Available at: http://dx.doi.org/10.4314/afrrev.v8i1.17.
+
+Chowdhury, A. R. (1988). The infant mortality–fertility debate: some international evidence. Southern Economic Journal, 54, 666–674.
+
+Doane, D.P. and Lori Welte Seward (2019). Applied statistics in business and economics. Boston: Mcgraw-Hill/Irwin.
+Gapminder 2022, 'Child mortality (0-5 year-olds dying per 1000 born)', dataset, available at: https://www.gapminder.org/data/.
+
+Gapminder 2022, 'Documentation for dataset: Children per woman (total fertility)', available at: https://www.gapminder.org/data/documentation/gd005/.
+
+Gapminder 2022, 'Documentation for dataset: GDP per capita, constant PPP dollars', available at: https://www.gapminder.org/data/documentation/gd001/.
+
+Gapminder 2022, 'Fertility rate, total (births per woman)', dataset, available at: https://www.gapminder.org/data/.
+
+Gapminder 2022, 'GDP per capita (Price and inflation adjusted, in PPP$2021)', dataset, available at: https://www.gapminder.org/data/.
+
+Gapminder 2022, 'Immunization, DPT (% of children ages 12-23 months)', dataset, available at: https://www.gapminder.org/data/.
+
+Oloo, J.A. 2005, 'Child mortality in developing countries: Challenges and policy options', Eastern Africa Social Science Research Review, vol. 21, no. 2, pp. 1-17, https://dx.doi.org/10.1353/eas.2005.0009.
+
+Rutstein, S.O, 'Factors associated with trends in infant and child mortality in developing countries during the 1990s'
+
+Schultz, T. P. (1978). Fertility and child mortality over the life cycle: aggregate and individual evidence. The American Economic Review, 68(2), 208–215.
+
+United Nations Population Division 2022, World population prospects: 2022 revision.
+
+WHO and UNICEF, Immunization surveillance, assessment and monitoring, available at: http://www.who.int/immunization/monitoring_surveillance/en/.
+
+
+```{r footnotes, results='asis', echo=FALSE}
+# Footnotes
+cat('<div class="footnotes"style="color: red;">
+  <p>Libraries Used: <code>readr</code>, <code>rvest</code>, <code>httr</code>, <code>xml2</code>, <code>tidyverse</code>, <code>jsonlite</code>, <code>dplyr</code>, <code>gapminder</code>, <code>ggplot2</code>, <code>lubridate</code>, <code>ggthemes</code>, <code>stringr</code>, <code>janitor</code>, <code>haven</code>, <code>tibble</code>, <code>parallel</code>, <code>readxl</code>, <code>broom</code>, <code>kableExtra</code>.</p>
+</div>')
+
+```
+
